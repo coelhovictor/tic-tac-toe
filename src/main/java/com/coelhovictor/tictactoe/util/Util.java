@@ -1,5 +1,8 @@
 package com.coelhovictor.tictactoe.util;
 
+import com.coelhovictor.localstorage.controllers.LocalStorageController;
+import com.coelhovictor.localstorage.objs.LocalStorage;
+import com.coelhovictor.tictactoe.objs.Scoreleader;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -18,15 +21,37 @@ public class Util {
     private final String fontsPath = "assets"+File.separator+"fonts"+File.separator;
     
     /**
+     * Fonts path.
+     */
+    private final String databasePath = "C:\\Users\\Pichau\\Desktop\\database\\";
+    
+    /**
      * GraphicsEnvironment.
      */
     private final GraphicsEnvironment ge;
+    
+    /**
+     * Scoreleaders database.
+     */
+    private final LocalStorage scoreLeadersDB;
     
     /**
      * Class constructor.
      */
     public Util() {
         this.ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        
+        /**
+         * Inicialize database
+         */
+        LocalStorageController.inicialize(this.databasePath);
+        
+        /**
+         * Inicialize scoreleaders database
+         */
+        
+        this.scoreLeadersDB = new LocalStorage("scoreleaders", Scoreleader.class);
+        
     }
     
     /**
@@ -64,7 +89,6 @@ public class Util {
                     Font.TRUETYPE_FONT,
                     new File(fontsPath + "Texta-Alt-Regular.ttf"))
                     .deriveFont(12f);
-            System.out.println(textaAltRegular.getName());
             ge.registerFont(textaAltRegular);
             
         } catch (FontFormatException | IOException ex) {
@@ -72,5 +96,12 @@ public class Util {
         }
         
     }
+    
+    /**
+     * Returns the scoreleaders database
+     * 
+     * @return <code>LocalStorage</code> the scoreleaders database
+     */
+    public LocalStorage getScoreLeadersDB() { return this.scoreLeadersDB; }
     
 }

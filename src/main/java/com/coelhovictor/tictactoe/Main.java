@@ -1,6 +1,5 @@
 package com.coelhovictor.tictactoe;
 
-
 import com.coelhovictor.tictactoe.guis.Home;
 import com.coelhovictor.tictactoe.objs.Difficulty;
 import com.coelhovictor.tictactoe.objs.Session;
@@ -18,13 +17,18 @@ public class Main {
      */
     private static Session currentSession;
     
+    /**
+     * Util
+     */
+    private static Util util;
+    
     public static void main(String[] args) {
     
         /**
          * Util inicialize
          */
         
-         Util util = new Util();
+         util = new Util();
          util.setupFonts();
         
         /**
@@ -46,8 +50,14 @@ public class Main {
      * Returns the current game <code>Session</code>.
      *
      * @return <code>Session</code> the current session
-     * @see #setSession
      */
     public static Session getSession() { return currentSession; }
+    
+    /**
+     * Returns util
+     *
+     * @return <code>Util</code> util
+     */
+    public static Util getUtil() { return util; }
 
 }

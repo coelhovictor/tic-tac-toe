@@ -102,17 +102,13 @@ public class Home extends javax.swing.JFrame {
          * Form
          */
 
-        JLabel nickLabel = new javax.swing.JLabel();
         JTextField nickField = new javax.swing.JTextField();
-        JButton startButton = new javax.swing.JButton();
         
-        nickLabel.setText("Nick:");
-        nickLabel.setFont(new java.awt.Font("Dialog", 1, 14));
-
         nickField.setBackground(new java.awt.Color(204, 204, 204));
         nickField.setText("coelho");
         nickField.setPreferredSize(new Dimension(120, 30));
         
+        JButton startButton = new javax.swing.JButton();
         startButton.setText("Play!");
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -130,6 +126,19 @@ public class Home extends javax.swing.JFrame {
             }
         });
         
+        JButton scoreLeadersButton = new javax.swing.JButton();
+        scoreLeadersButton.setText("Scoreleaders");
+        scoreLeadersButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                /**
+                 * Open scoreleaders screen
+                 */
+                
+                scoreleaders();
+            }
+        });
+        
         String[] ls = { "Random", SpotType.X.toString(), SpotType.O.toString() };
         spotTypeSelector = new JComboBox(ls);
         spotTypeSelector.setSelectedIndex(0);
@@ -143,13 +152,16 @@ public class Home extends javax.swing.JFrame {
         difficultySelector.setSelectedIndex(difficulty.ordinal());
         
         JPanel formPanel = new JPanel(); 
-        formPanel.setLayout(new GridLayout(6, 1, 0, 5));
-        formPanel.add(nickLabel);
+        formPanel.setLayout(new GridLayout(9, 1, 0, 5));
+        formPanel.add(new JLabel("Nick:"));
         formPanel.add(nickField);
+        formPanel.add(new JLabel("Symbol:"));
         formPanel.add(spotTypeSelector);
+        formPanel.add(new JLabel("Difficulty:"));
         formPanel.add(difficultySelector);
         formPanel.add(startPlayingCheckbox);
         formPanel.add(startButton);
+        formPanel.add(scoreLeadersButton);
         formPanel.setBorder(new EmptyBorder(30, 50, 45, 50));
         
         add(formPanel, BorderLayout.CENTER);
@@ -220,6 +232,14 @@ public class Home extends javax.swing.JFrame {
 
         new Play(game);
         
+    }
+    
+    /**
+     * Open scoreleaders screen
+     */
+    private void scoreleaders() {
+        this.dispose();
+        new Scoreleaders();
     }
     
 }

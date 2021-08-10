@@ -1,18 +1,18 @@
 package com.coelhovictor.tictactoe.guis;
 
+import com.coelhovictor.localstorage.objs.LocalStorage;
 import com.coelhovictor.tictactoe.Main;
 import com.coelhovictor.tictactoe.objs.Game;
 import com.coelhovictor.tictactoe.objs.GameAction;
 import com.coelhovictor.tictactoe.objs.Player;
 import com.coelhovictor.tictactoe.objs.Scoreboard;
+import com.coelhovictor.tictactoe.objs.Scoreleader;
 import com.coelhovictor.tictactoe.objs.Spot;
 import com.coelhovictor.tictactoe.objs.SpotType;
 import com.coelhovictor.tictactoe.objs.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
@@ -359,6 +359,24 @@ public class Play extends javax.swing.JFrame {
                     score.addCPU();
                     cpuScore.setText(score.getCPUScore() + "");
                 }
+                
+                /**
+                 * Update player scoreleader
+                 */
+                
+                String playerNick = Main.getSession().getPlayer().getNick();
+                
+                LocalStorage scoreLeadersDB = Main.getUtil().getScoreLeadersDB();
+                Scoreleader scoreLeader = scoreLeadersDB.find(playerNick);
+                if(scoreLeader == null) {
+                    scoreLeader = new Scoreleader(playerNick);
+                }
+                if(winner == this.game.getPlayerSpotType()) {
+                    scoreLeader.addWin();
+                } else {
+                    scoreLeader.addDefeat();
+                }
+                scoreLeadersDB.save(playerNick, scoreLeader);
 
                 return null;
             } else {

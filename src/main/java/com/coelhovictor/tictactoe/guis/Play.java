@@ -374,7 +374,7 @@ public class Play extends javax.swing.JFrame {
     private void back() {
         this.gameTimer.cancel();
         this.dispose();
-        new Home(this.game.startPlaying());
+        new Home(this.game.startPlaying(), this.game.getDifficulty());
     }
     
     /**
@@ -383,7 +383,11 @@ public class Play extends javax.swing.JFrame {
     private void restart() {
         this.gameTimer.cancel();
         this.dispose();
-        new Play(new Game(this.game.getPlayerSpotType(), this.game.startPlaying()));
+        
+        new Play(new Game(
+                        this.game.getPlayerSpotType(), 
+                        this.game.startPlaying(),
+                        this.game.getDifficulty()));
     }
     
     /**
@@ -404,26 +408,17 @@ public class Play extends javax.swing.JFrame {
      */
     private void playCPU() {
         
-        List<Spot> ls = this.game.avaliableSpots();
-        
         int row = 0;
         int column = 0;
         
-        if(!ls.isEmpty()) {
-            
-            /*
-                CPU chooses the best spot
-            */
-            
-            Random random = new Random();
-            int r = random.nextInt(ls.size());
-            
-            Spot target = ls.get(r);
-            if(target != null) {
-                row = target.getRow();
-                column = target.getColumn();
-            }
-            
+        /**
+         * CPU chooses the best spot
+         */
+
+        Spot target = this.game.chooseCPUSpot();
+        if(target != null) {
+            row = target.getRow();
+            column = target.getColumn();
         }
         
         action(row, column, TurnType.CPU);

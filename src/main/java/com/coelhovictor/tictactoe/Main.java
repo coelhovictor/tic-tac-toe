@@ -2,6 +2,7 @@ package com.coelhovictor.tictactoe;
 
 
 import com.coelhovictor.tictactoe.guis.Home;
+import com.coelhovictor.tictactoe.objs.Difficulty;
 import com.coelhovictor.tictactoe.objs.Session;
 
 
@@ -21,7 +22,7 @@ public class Main {
         /**
          * Open home screen
          */
-        new Home(true);
+        new Home(true, Difficulty.EASY);
         
     }
     

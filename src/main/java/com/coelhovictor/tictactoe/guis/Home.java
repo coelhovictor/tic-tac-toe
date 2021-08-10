@@ -1,6 +1,7 @@
 package com.coelhovictor.tictactoe.guis;
 
 import com.coelhovictor.tictactoe.Main;
+import com.coelhovictor.tictactoe.objs.Difficulty;
 import com.coelhovictor.tictactoe.objs.Game;
 import com.coelhovictor.tictactoe.objs.Player;
 import com.coelhovictor.tictactoe.objs.Session;
@@ -35,25 +36,32 @@ public class Home extends javax.swing.JFrame {
      */
     private JCheckBox startPlayingCheckbox;
     
+    /**
+     * The difficulty selector.
+     */
+    private JComboBox difficultySelector;
+    
     /** 
      * Class contructor.
      * 
      * @param startPlaying if player start playing
+     * @param difficulty the game difficulty
      */
-    public Home(boolean startPlaying) {
+    public Home(boolean startPlaying, Difficulty difficulty) {
         
         /**
          * Inicialize screen
          */
-        inicialize(startPlaying);
+        inicialize(startPlaying, difficulty);
     }
     
     /**
      * Inicialize and build the home screen.
      * 
      * @param startPlaying if player start playing
+     * @param difficulty the game difficulty
      */
-    private void inicialize(boolean startPlaying) {
+    private void inicialize(boolean startPlaying, Difficulty difficulty) {
       
         /**
          * Page props
@@ -130,11 +138,16 @@ public class Home extends javax.swing.JFrame {
         startPlayingCheckbox.setText("Start playing");
         startPlayingCheckbox.setSelected(startPlaying);
         
+        String[] lsDiff = { Difficulty.EASY.toString(), Difficulty.MEDIUM.toString(), Difficulty.HARD.toString() };
+        difficultySelector = new JComboBox(lsDiff);
+        difficultySelector.setSelectedIndex(difficulty.ordinal());
+        
         JPanel formPanel = new JPanel(); 
-        formPanel.setLayout(new GridLayout(5, 1, 0, 5));
+        formPanel.setLayout(new GridLayout(6, 1, 0, 5));
         formPanel.add(nickLabel);
         formPanel.add(nickField);
         formPanel.add(spotTypeSelector);
+        formPanel.add(difficultySelector);
         formPanel.add(startPlayingCheckbox);
         formPanel.add(startButton);
         formPanel.setBorder(new EmptyBorder(30, 50, 45, 50));
@@ -191,7 +204,19 @@ public class Home extends javax.swing.JFrame {
         
         boolean startPlaying = startPlayingCheckbox.isSelected();
         
-        Game game = new Game(targetSpotType, startPlaying);
+        /**
+         * Game difficulty
+         */
+        
+        Difficulty targetDifficulty = Difficulty.EASY;
+        
+        String indexDiff = (String)difficultySelector.getSelectedItem();
+        Difficulty target = Difficulty.valueOf(indexDiff);
+        if(target != null) {
+            targetDifficulty = target;
+        }
+        
+        Game game = new Game(targetSpotType, startPlaying, targetDifficulty);
 
         new Play(game);
         

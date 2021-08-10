@@ -2,8 +2,11 @@ package com.coelhovictor.tictactoe.objs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -43,6 +46,11 @@ public class Game {
     private final SpotType playerSpotType;
     
     /**
+     * Game difficulty.
+     */
+    private final Difficulty difficulty;
+    
+    /**
      * Current <code>TurnType</code>.
      */
     private TurnType turnType;
@@ -62,8 +70,9 @@ public class Game {
      * 
      * @param playerSpotType the player spot type
      * @param startPlaying if player start playing
+     * @param difficulty game difficulty
      */
-    public Game(SpotType playerSpotType, boolean startPlaying) {
+    public Game(SpotType playerSpotType, boolean startPlaying, Difficulty difficulty) {
         this.id = UUID.randomUUID().toString();
         this.spots = new HashMap<>();
         this.live = true;
@@ -73,6 +82,7 @@ public class Game {
         } else {
             this.turnType = TurnType.CPU;
         }
+        this.difficulty = difficulty;
         this.winner = null;
         this.winnerSpots = new ArrayList<>();
         this.playerSpotType = playerSpotType;
@@ -101,6 +111,13 @@ public class Game {
     public boolean isLive() { return this.live; }
     
     /**
+     * Returns the game difficulty
+     * 
+     * @return <code>Difficulty</code> of the game
+     */
+    public Difficulty getDifficulty() { return this.difficulty; }
+    
+    /**
      * Returns the game <code>TurnType</code>.
      * 
      * @return <code>TurnType</code> the game turn type
@@ -124,9 +141,16 @@ public class Game {
     /**
      * Returns the player spot type.
      * 
-     * @return <code>SpotType</code> all the winner spots
+     * @return <code>SpotType</code> player spot type
      */
     public SpotType getPlayerSpotType() { return this.playerSpotType; }
+    
+    /**
+     * Returns the CPU spot type.
+     * 
+     * @return <code>SpotType</code> CPU spot type
+     */
+    public SpotType getCPUSpotType() { return this.playerSpotType == SpotType.X ? SpotType.O : SpotType.X; }
     
     /**
      * Returns if player start playing.
@@ -251,8 +275,8 @@ public class Game {
      */
     public SpotType checkWinner(GameAction action) {
 
-        SpotType winner = null;
-        List<Spot> winnerSpots = null;
+        SpotType winnerBrute = null;
+        List<Spot> winnerSpotsBrute = null;
         
         /**
          * First verification
@@ -287,8 +311,8 @@ public class Game {
                         explain = explain + keySpot(count.get(i).getRow(), count.get(i).getColumn()) + ", ";
                     }
                     
-                    winner = count.get(0).getSpot();
-                    winnerSpots = count;
+                    winnerBrute = count.get(0).getSpot();
+                    winnerSpotsBrute = count;
                     
                     break;
                 }
@@ -301,7 +325,7 @@ public class Game {
          * Second verification
          */
         
-        if(winner == null) {
+        if(winnerBrute == null) {
             
             Spot targetA = this.spots.get(keySpot(0, 0));
             Spot targetB = this.spots.get(keySpot(1, 1));
@@ -311,8 +335,8 @@ public class Game {
                     && (targetA.getSpot() == targetB.getSpot()
                     && targetB.getSpot() == targetC.getSpot())) {
                 
-                winner = targetA.getSpot();
-                winnerSpots = Arrays.asList(targetA, targetB, targetC);
+                winnerBrute = targetA.getSpot();
+                winnerSpotsBrute = Arrays.asList(targetA, targetB, targetC);
                 
             }
             
@@ -322,7 +346,7 @@ public class Game {
          * Third verification
          */
         
-        if(winner == null) {
+        if(winnerBrute == null) {
             
             Spot targetA = this.spots.get(keySpot(0, 2));
             Spot targetB = this.spots.get(keySpot(1, 1));
@@ -332,21 +356,21 @@ public class Game {
                     && (targetA.getSpot() == targetB.getSpot()
                     && targetB.getSpot() == targetC.getSpot())) {
                 
-                winner = targetA.getSpot();
-                winnerSpots = Arrays.asList(targetA, targetB, targetC);
+                winnerBrute = targetA.getSpot();
+                winnerSpotsBrute = Arrays.asList(targetA, targetB, targetC);
                 
             }
             
         }
        
-        if(winner != null) {
+        if(winnerBrute != null) {
             
             /**
              * Setting winner
              */
 
-            this.winner = winner;
-            this.winnerSpots = winnerSpots;
+            this.winner = winnerBrute;
+            this.winnerSpots = winnerSpotsBrute;
             this.live = false;
 
             return this.winner;
@@ -370,6 +394,163 @@ public class Game {
         }
         
         return false;
+    }
+    
+    /**
+     * Returns CPU spot choose.
+     * 
+     * @return <code>Spot</code>
+     */
+    public Spot chooseCPUSpot() {
+     
+        List<Spot> ls = avaliableSpots();
+        if(!ls.isEmpty()) {
+            
+            Spot choose = null;
+            SpotType preference = getCPUSpotType();
+            
+            /**
+             * Easy difficulty
+             */
+            
+            List<ChoosePrepare> chooseLs = new ArrayList<>();
+
+            for(int ways = 0; ways < 2; ways++) {
+                
+                int separator = 0;
+                ChoosePrepare choosePrepare = new ChoosePrepare();
+                
+                for(int rows = 0; rows < 3; rows++) {
+
+                    for(int columns = 0; columns < 3; columns++) {
+                        
+                        if(separator == 2) {
+                            chooseLs.add(choosePrepare);
+                        }
+                        
+                        if(separator == 3) {
+                            separator = 0;
+                            choosePrepare = new ChoosePrepare();
+                        }
+                        
+                        String keySpot;
+                        
+                        if(ways == 0) {
+                            keySpot = keySpot(rows, columns);
+                        } else {
+                            keySpot = keySpot(columns, rows);
+                        }
+                        
+                        choosePrepare.add(this.spots.get(keySpot));
+                        
+                        separator++;
+
+                    }
+
+                }
+                
+            }
+            
+            /**
+            * Hard difficulty
+            */
+            
+            if(getDifficulty().ordinal() >= 2) {
+            
+                for(int ways = 0; ways < 2; ways++) {
+
+                    ChoosePrepare choosePrepare = new ChoosePrepare();
+
+                    Spot targetA;
+                    Spot targetB;
+                    Spot targetC;
+
+                    if(ways == 0) {
+                        targetA = this.spots.get(keySpot(0, 0));
+                        targetB = this.spots.get(keySpot(1, 1));
+                        targetC = this.spots.get(keySpot(2, 2));
+                    } else {
+                        targetA = this.spots.get(keySpot(0, 2));
+                        targetB = this.spots.get(keySpot(1, 1));
+                        targetC = this.spots.get(keySpot(2, 0));
+                    }
+
+                    choosePrepare.add(targetA);
+                    choosePrepare.add(targetB);
+                    choosePrepare.add(targetC);
+                    chooseLs.add(choosePrepare);
+
+                }
+                
+            }
+            
+            Collections.sort (chooseLs, new Comparator<ChoosePrepare>() {
+                public int compare(ChoosePrepare o1, ChoosePrepare o2) {
+                    return o1.getScore() < o2.getScore() ? +1 
+                            : (o1.getScore() > o2.getScore() ? -1 : 0);
+                }
+            });
+
+            if(!ls.isEmpty()) {
+
+                ChoosePrepare second = null;
+
+                /**
+                 * Medium difficulty
+                 */
+                
+                if(getDifficulty().ordinal() >= 1) {
+                
+                    if(chooseLs.size() > 1) {
+
+                        ChoosePrepare secondBrute = chooseLs.get(1);
+                        if(secondBrute.getScore() > 1) {
+                            second = secondBrute;
+                        }
+
+                    }
+                    
+                }
+
+                ChoosePrepare first = chooseLs.get(0);
+                if(first.getScore() > 1) {
+
+                    if(second != null) {
+
+                        int[] firstSeparated = first.getScoreSeparated();
+                        int[] secondSeparated = second.getScoreSeparated();
+
+                        if(preference == SpotType.X) {
+                            if(secondSeparated[0] >= firstSeparated[0]) {
+                                first = second;
+                            }
+                        }
+                        if(preference == SpotType.O) {
+                            if(secondSeparated[1] >= firstSeparated[1]) {
+                                first = second;
+                            }
+                        }
+
+                    }
+
+                    Spot spot = first.choose();
+                    if(spot != null) {
+                        choose = spot;
+                    }
+
+                }
+
+            }
+            
+            if(choose != null) {
+                return choose;
+            }
+            
+            Random random = new Random();
+            return ls.get(random.nextInt(ls.size()));
+        }
+        
+        return null;
     }
     
     /**

@@ -263,7 +263,7 @@ public class Play extends javax.swing.JFrame {
             }
         });
         
-        bottomPanel.setBackground(Color.GRAY);
+        bottomPanel.setBackground(Color.BLACK);
         bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         bottomPanel.setLayout(new BorderLayout());
         bottomPanel.add(backButton, BorderLayout.WEST);
@@ -374,7 +374,7 @@ public class Play extends javax.swing.JFrame {
     private void back() {
         this.gameTimer.cancel();
         this.dispose();
-        new Home();
+        new Home(this.game.startPlaying());
     }
     
     /**

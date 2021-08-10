@@ -37,19 +37,23 @@ public class Home extends javax.swing.JFrame {
     
     /** 
      * Class contructor.
+     * 
+     * @param startPlaying if player start playing
      */
-    public Home() {
+    public Home(boolean startPlaying) {
         
         /**
          * Inicialize screen
          */
-        inicialize();
+        inicialize(startPlaying);
     }
     
     /**
      * Inicialize and build the home screen.
+     * 
+     * @param startPlaying if player start playing
      */
-    private void inicialize() {
+    private void inicialize(boolean startPlaying) {
       
         /**
          * Page props
@@ -124,7 +128,7 @@ public class Home extends javax.swing.JFrame {
         
         startPlayingCheckbox = new JCheckBox();
         startPlayingCheckbox.setText("Start playing");
-        startPlayingCheckbox.setSelected(true);
+        startPlayingCheckbox.setSelected(startPlaying);
         
         JPanel formPanel = new JPanel(); 
         formPanel.setLayout(new GridLayout(5, 1, 0, 5));

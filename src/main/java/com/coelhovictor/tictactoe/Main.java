@@ -21,7 +21,7 @@ public class Main {
         /**
          * Open home screen
          */
-        new Home();
+        new Home(true);
         
     }
     

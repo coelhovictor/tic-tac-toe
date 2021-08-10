@@ -86,12 +86,12 @@ public class Home extends javax.swing.JFrame {
         JLabel authorLabel = new javax.swing.JLabel();
         authorLabel.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 14));
         authorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        authorLabel.setText("Author: VictorCoelho");
+        authorLabel.setText("github.com/CoelhoVictor");
         authorLabel.setForeground(Color.WHITE);
         
         JPanel headerPanel = new JPanel(); 
         headerPanel.setBackground(Color.BLACK);
-        headerPanel.setLayout(new GridLayout(2, 1, 0, -60));
+        headerPanel.setLayout(new GridLayout(2, 1, 0, -50));
         headerPanel.add(titleLabel);
         headerPanel.add(authorLabel);
         headerPanel.setPreferredSize(new Dimension(350, 105));

@@ -4,6 +4,7 @@ package com.coelhovictor.tictactoe;
 import com.coelhovictor.tictactoe.guis.Home;
 import com.coelhovictor.tictactoe.objs.Difficulty;
 import com.coelhovictor.tictactoe.objs.Session;
+import com.coelhovictor.tictactoe.util.Util;
 
 
 /**
@@ -20,8 +21,16 @@ public class Main {
     public static void main(String[] args) {
     
         /**
+         * Util inicialize
+         */
+        
+         Util util = new Util();
+         util.setupFonts();
+        
+        /**
          * Open home screen
          */
+        
         new Home(true, Difficulty.EASY);
         
     }

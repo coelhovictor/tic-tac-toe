@@ -57,6 +57,11 @@ public class Play extends javax.swing.JFrame {
      */
     private JPanel gamePanel;
     
+    /**
+     * Turn <code>JPanel</code>.
+     */
+    private JPanel turnPanel;
+    
     /** 
      * Class contructor.
      * 
@@ -106,6 +111,7 @@ public class Play extends javax.swing.JFrame {
         cpuScore = new javax.swing.JLabel();
         turnLabel = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
+        turnPanel = new JPanel(); 
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TicTacToe");
@@ -118,19 +124,19 @@ public class Play extends javax.swing.JFrame {
          */
         
         centerLabel.setText(Main.getSession().getPlayer().getNick() + " vs CPU");
-        centerLabel.setFont(new java.awt.Font("Dialog", 1, 24));
+        centerLabel.setFont(new java.awt.Font("Mukta Medium", 1, 24));
         centerLabel.setForeground(Color.WHITE);
         
         turnLabel.setText(turnIndicator());
-        turnLabel.setFont(new java.awt.Font("Dialog", 1, 18));
+        turnLabel.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 18));
         
         playerScore.setText(Main.getSession().getScoreboard().getPlayerScore() + "");
-        playerScore.setFont(new java.awt.Font("Dialog", 1, 20));
+        playerScore.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 20));
         playerScore.setBorder(new EmptyBorder(10, 10, 10, 10));
         playerScore.setForeground(Color.WHITE);
         
         cpuScore.setText(Main.getSession().getScoreboard().getCPUScore() + "");
-        cpuScore.setFont(new java.awt.Font("Dialog", 1, 20));
+        cpuScore.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 20));
         cpuScore.setBorder(new EmptyBorder(10, 10, 10, 10));
         cpuScore.setForeground(Color.WHITE);
         
@@ -143,17 +149,16 @@ public class Play extends javax.swing.JFrame {
         topPanel.add(centerLabel, "Center");
         topPanel.add(cpuScore, BorderLayout.EAST);
         
-        JPanel downPanel = new JPanel(); 
-        downPanel.setLayout(new BorderLayout());
-        downPanel.setBackground(Color.GRAY);
+        turnPanel.setLayout(new BorderLayout());
+        turnPanel.setBackground(Color.GRAY);
         turnLabel.setHorizontalAlignment(JLabel.CENTER);
         turnLabel.setVerticalAlignment(JLabel.CENTER);
         turnLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        downPanel.add(turnLabel, BorderLayout.CENTER);
+        turnPanel.add(turnLabel, BorderLayout.CENTER);
         
         headerPanel.setLayout(new BorderLayout());
         headerPanel.add(topPanel, BorderLayout.NORTH);
-        headerPanel.add(downPanel, BorderLayout.SOUTH);
+        headerPanel.add(turnPanel, BorderLayout.SOUTH);
         
         add(headerPanel, BorderLayout.NORTH);
         
@@ -171,7 +176,7 @@ public class Play extends javax.swing.JFrame {
                 button.setPreferredSize(new Dimension(120, 120));
                 button.setBackground(Color.WHITE);
                 button.setBorder(new LineBorder(Color.BLACK, 2));
-                button.setFont(new java.awt.Font("Dialog", 1, 50));
+                button.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 60));
                 
                 final int row = rows;
                 final int column = columns;
@@ -314,6 +319,18 @@ public class Play extends javax.swing.JFrame {
             
             if(winner != null) {
             
+                /**
+                 * Update winner turn indicator color
+                 */
+                
+                if(winner == this.game.getPlayerSpotType()) {
+                    turnLabel.setForeground(Color.BLACK);
+                    turnPanel.setBackground(Color.GREEN);
+                } else {
+                    turnLabel.setForeground(Color.WHITE);
+                    turnPanel.setBackground(Color.RED);
+                }
+                
                 /**
                  * Update winner spots color
                  */

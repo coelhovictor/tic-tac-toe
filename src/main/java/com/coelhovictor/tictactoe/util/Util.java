@@ -29,7 +29,7 @@ public class Util {
     /**
      * Fonts path.
      */
-    private final String databasePath = "C:\\Users\\Pichau\\Desktop\\database\\";
+    private final String databasePath = ".."+File.separator+"TicTacToe-databases"+File.separator;
     
     /**
      * GraphicsEnvironment.

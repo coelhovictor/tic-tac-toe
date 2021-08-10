@@ -383,7 +383,7 @@ public class Play extends javax.swing.JFrame {
     private void restart() {
         this.gameTimer.cancel();
         this.dispose();
-        new Play(new Game(this.game.getPlayerSpotType()));
+        new Play(new Game(this.game.getPlayerSpotType(), this.game.startPlaying()));
     }
     
     /**

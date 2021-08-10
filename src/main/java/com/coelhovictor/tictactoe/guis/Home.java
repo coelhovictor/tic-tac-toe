@@ -12,6 +12,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.util.Random;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,6 +29,11 @@ public class Home extends javax.swing.JFrame {
      * The spot type selector.
      */
     private JComboBox spotTypeSelector;
+    
+    /**
+     * The start playing checkbox.
+     */
+    private JCheckBox startPlayingCheckbox;
     
     /** 
      * Class contructor.
@@ -116,11 +122,16 @@ public class Home extends javax.swing.JFrame {
         spotTypeSelector = new JComboBox(ls);
         spotTypeSelector.setSelectedIndex(0);
         
+        startPlayingCheckbox = new JCheckBox();
+        startPlayingCheckbox.setText("Start playing");
+        startPlayingCheckbox.setSelected(true);
+        
         JPanel formPanel = new JPanel(); 
-        formPanel.setLayout(new GridLayout(4, 1, 0, 5));
+        formPanel.setLayout(new GridLayout(5, 1, 0, 5));
         formPanel.add(nickLabel);
         formPanel.add(nickField);
         formPanel.add(spotTypeSelector);
+        formPanel.add(startPlayingCheckbox);
         formPanel.add(startButton);
         formPanel.setBorder(new EmptyBorder(30, 50, 45, 50));
         
@@ -149,6 +160,10 @@ public class Home extends javax.swing.JFrame {
         Session session = new Session(p);
         Main.setSession(session);
 
+        /**
+         * Target player symbol
+         */
+        
         SpotType targetSpotType = SpotType.X;
         
         String index = (String)spotTypeSelector.getSelectedItem();
@@ -166,7 +181,13 @@ public class Home extends javax.swing.JFrame {
             }
         }
         
-        Game game = new Game(targetSpotType);
+        /**
+         * If player start playing
+         */
+        
+        boolean startPlaying = startPlayingCheckbox.isSelected();
+        
+        Game game = new Game(targetSpotType, startPlaying);
 
         new Play(game);
         

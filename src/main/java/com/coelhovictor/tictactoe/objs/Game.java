@@ -48,6 +48,11 @@ public class Game {
     private TurnType turnType;
     
     /**
+     * Starting playing;
+     */
+    private final boolean startPlaying;
+    
+    /**
      * Game created time.
      */
     private final long timing;
@@ -56,12 +61,18 @@ public class Game {
      * Class contructor.
      * 
      * @param playerSpotType the player spot type
+     * @param startPlaying if player start playing
      */
-    public Game(SpotType playerSpotType) {
+    public Game(SpotType playerSpotType, boolean startPlaying) {
         this.id = UUID.randomUUID().toString();
         this.spots = new HashMap<>();
         this.live = true;
-        this.turnType = TurnType.PLAYER;
+        this.startPlaying = startPlaying;
+        if(startPlaying) {
+            this.turnType = TurnType.PLAYER;
+        } else {
+            this.turnType = TurnType.CPU;
+        }
         this.winner = null;
         this.winnerSpots = new ArrayList<>();
         this.playerSpotType = playerSpotType;
@@ -116,6 +127,13 @@ public class Game {
      * @return <code>SpotType</code> all the winner spots
      */
     public SpotType getPlayerSpotType() { return this.playerSpotType; }
+    
+    /**
+     * Returns if player start playing.
+     * 
+     * @return <code>boolean</code> if player start playing
+     */
+    public boolean startPlaying() { return this.startPlaying; }
     
     /**
      * Returns all the avaliable spots.

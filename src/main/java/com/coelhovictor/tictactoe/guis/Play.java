@@ -1,18 +1,18 @@
 package com.coelhovictor.tictactoe.guis;
 
+import com.coelhovictor.localstorage.objs.LocalStorage;
 import com.coelhovictor.tictactoe.Main;
 import com.coelhovictor.tictactoe.objs.Game;
 import com.coelhovictor.tictactoe.objs.GameAction;
 import com.coelhovictor.tictactoe.objs.Player;
 import com.coelhovictor.tictactoe.objs.Scoreboard;
+import com.coelhovictor.tictactoe.objs.Scoreleader;
 import com.coelhovictor.tictactoe.objs.Spot;
 import com.coelhovictor.tictactoe.objs.SpotType;
 import com.coelhovictor.tictactoe.objs.TurnType;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
@@ -56,6 +56,11 @@ public class Play extends javax.swing.JFrame {
      * Game <code>JPanel</code>.
      */
     private JPanel gamePanel;
+    
+    /**
+     * Turn <code>JPanel</code>.
+     */
+    private JPanel turnPanel;
     
     /** 
      * Class contructor.
@@ -106,6 +111,7 @@ public class Play extends javax.swing.JFrame {
         cpuScore = new javax.swing.JLabel();
         turnLabel = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
+        turnPanel = new JPanel(); 
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TicTacToe");
@@ -118,19 +124,19 @@ public class Play extends javax.swing.JFrame {
          */
         
         centerLabel.setText(Main.getSession().getPlayer().getNick() + " vs CPU");
-        centerLabel.setFont(new java.awt.Font("Dialog", 1, 24));
+        centerLabel.setFont(new java.awt.Font("Mukta Medium", 1, 24));
         centerLabel.setForeground(Color.WHITE);
         
         turnLabel.setText(turnIndicator());
-        turnLabel.setFont(new java.awt.Font("Dialog", 1, 18));
+        turnLabel.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 18));
         
         playerScore.setText(Main.getSession().getScoreboard().getPlayerScore() + "");
-        playerScore.setFont(new java.awt.Font("Dialog", 1, 20));
+        playerScore.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 20));
         playerScore.setBorder(new EmptyBorder(10, 10, 10, 10));
         playerScore.setForeground(Color.WHITE);
         
         cpuScore.setText(Main.getSession().getScoreboard().getCPUScore() + "");
-        cpuScore.setFont(new java.awt.Font("Dialog", 1, 20));
+        cpuScore.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 20));
         cpuScore.setBorder(new EmptyBorder(10, 10, 10, 10));
         cpuScore.setForeground(Color.WHITE);
         
@@ -143,17 +149,16 @@ public class Play extends javax.swing.JFrame {
         topPanel.add(centerLabel, "Center");
         topPanel.add(cpuScore, BorderLayout.EAST);
         
-        JPanel downPanel = new JPanel(); 
-        downPanel.setLayout(new BorderLayout());
-        downPanel.setBackground(Color.GRAY);
+        turnPanel.setLayout(new BorderLayout());
+        turnPanel.setBackground(Color.GRAY);
         turnLabel.setHorizontalAlignment(JLabel.CENTER);
         turnLabel.setVerticalAlignment(JLabel.CENTER);
         turnLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        downPanel.add(turnLabel, BorderLayout.CENTER);
+        turnPanel.add(turnLabel, BorderLayout.CENTER);
         
         headerPanel.setLayout(new BorderLayout());
         headerPanel.add(topPanel, BorderLayout.NORTH);
-        headerPanel.add(downPanel, BorderLayout.SOUTH);
+        headerPanel.add(turnPanel, BorderLayout.SOUTH);
         
         add(headerPanel, BorderLayout.NORTH);
         
@@ -171,7 +176,7 @@ public class Play extends javax.swing.JFrame {
                 button.setPreferredSize(new Dimension(120, 120));
                 button.setBackground(Color.WHITE);
                 button.setBorder(new LineBorder(Color.BLACK, 2));
-                button.setFont(new java.awt.Font("Dialog", 1, 50));
+                button.setFont(new java.awt.Font("Texta Alt W00 Regular", 1, 60));
                 
                 final int row = rows;
                 final int column = columns;
@@ -263,7 +268,7 @@ public class Play extends javax.swing.JFrame {
             }
         });
         
-        bottomPanel.setBackground(Color.GRAY);
+        bottomPanel.setBackground(Color.BLACK);
         bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         bottomPanel.setLayout(new BorderLayout());
         bottomPanel.add(backButton, BorderLayout.WEST);
@@ -315,13 +320,25 @@ public class Play extends javax.swing.JFrame {
             if(winner != null) {
             
                 /**
+                 * Update winner turn indicator color
+                 */
+                
+                if(winner == this.game.getPlayerSpotType()) {
+                    turnLabel.setForeground(Color.BLACK);
+                    turnPanel.setBackground(Color.GREEN);
+                } else {
+                    turnLabel.setForeground(Color.WHITE);
+                    turnPanel.setBackground(Color.RED);
+                }
+                
+                /**
                  * Update winner spots color
                  */
 
                 for(Spot ls : this.game.getWinnerSpots()) {
 
                     JButton buttonWinner = foundButton(ls.getRow(), ls.getColumn());
-                    if(winner == SpotType.X) {
+                    if(winner == this.game.getPlayerSpotType()) {
                         buttonWinner.setBackground(Color.GREEN);
                     } else {
                         buttonWinner.setBackground(Color.RED);
@@ -335,13 +352,31 @@ public class Play extends javax.swing.JFrame {
                  */
                 
                 Scoreboard score = Main.getSession().getScoreboard();
-                if(winner == SpotType.X) {
+                if(winner == this.game.getPlayerSpotType()) {
                     score.addPlayer();
                     playerScore.setText(score.getPlayerScore() + "");
                 } else {
                     score.addCPU();
                     cpuScore.setText(score.getCPUScore() + "");
                 }
+                
+                /**
+                 * Update player scoreleader
+                 */
+                
+                String playerNick = Main.getSession().getPlayer().getNick();
+                
+                LocalStorage scoreLeadersDB = Main.getUtil().getScoreLeadersDB();
+                Scoreleader scoreLeader = scoreLeadersDB.find(playerNick);
+                if(scoreLeader == null) {
+                    scoreLeader = new Scoreleader(playerNick);
+                }
+                if(winner == this.game.getPlayerSpotType()) {
+                    scoreLeader.addWin();
+                } else {
+                    scoreLeader.addDefeat();
+                }
+                scoreLeadersDB.save(playerNick, scoreLeader);
 
                 return null;
             } else {
@@ -374,7 +409,7 @@ public class Play extends javax.swing.JFrame {
     private void back() {
         this.gameTimer.cancel();
         this.dispose();
-        new Home();
+        new Home(this.game.startPlaying(), this.game.getDifficulty());
     }
     
     /**
@@ -383,7 +418,11 @@ public class Play extends javax.swing.JFrame {
     private void restart() {
         this.gameTimer.cancel();
         this.dispose();
-        new Play(new Game());
+        
+        new Play(new Game(
+                        this.game.getPlayerSpotType(), 
+                        this.game.startPlaying(),
+                        this.game.getDifficulty()));
     }
     
     /**
@@ -404,26 +443,17 @@ public class Play extends javax.swing.JFrame {
      */
     private void playCPU() {
         
-        List<Spot> ls = this.game.avaliableSpots();
-        
         int row = 0;
         int column = 0;
         
-        if(!ls.isEmpty()) {
-            
-            /*
-                CPU chooses the best spot
-            */
-            
-            Random random = new Random();
-            int r = random.nextInt(ls.size());
-            
-            Spot target = ls.get(r);
-            if(target != null) {
-                row = target.getRow();
-                column = target.getColumn();
-            }
-            
+        /**
+         * CPU chooses the best spot
+         */
+
+        Spot target = this.game.chooseCPUSpot();
+        if(target != null) {
+            row = target.getRow();
+            column = target.getColumn();
         }
         
         action(row, column, TurnType.CPU);
@@ -438,7 +468,7 @@ public class Play extends javax.swing.JFrame {
     private String turnIndicator() {
         SpotType type = this.game.getWinner();
         if(type != null) {
-            if(type == SpotType.X) {
+            if(type == this.game.getPlayerSpotType()) {
                 return Main.getSession().getPlayer().getNick() + " won!";
             }
             return "CPU won!";

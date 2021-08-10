@@ -321,7 +321,7 @@ public class Play extends javax.swing.JFrame {
                 for(Spot ls : this.game.getWinnerSpots()) {
 
                     JButton buttonWinner = foundButton(ls.getRow(), ls.getColumn());
-                    if(winner == SpotType.X) {
+                    if(winner == this.game.getPlayerSpotType()) {
                         buttonWinner.setBackground(Color.GREEN);
                     } else {
                         buttonWinner.setBackground(Color.RED);
@@ -335,7 +335,7 @@ public class Play extends javax.swing.JFrame {
                  */
                 
                 Scoreboard score = Main.getSession().getScoreboard();
-                if(winner == SpotType.X) {
+                if(winner == this.game.getPlayerSpotType()) {
                     score.addPlayer();
                     playerScore.setText(score.getPlayerScore() + "");
                 } else {
@@ -383,7 +383,7 @@ public class Play extends javax.swing.JFrame {
     private void restart() {
         this.gameTimer.cancel();
         this.dispose();
-        new Play(new Game());
+        new Play(new Game(this.game.getPlayerSpotType()));
     }
     
     /**
@@ -438,7 +438,7 @@ public class Play extends javax.swing.JFrame {
     private String turnIndicator() {
         SpotType type = this.game.getWinner();
         if(type != null) {
-            if(type == SpotType.X) {
+            if(type == this.game.getPlayerSpotType()) {
                 return Main.getSession().getPlayer().getNick() + " won!";
             }
             return "CPU won!";

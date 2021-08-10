@@ -4,12 +4,15 @@ import com.coelhovictor.tictactoe.Main;
 import com.coelhovictor.tictactoe.objs.Game;
 import com.coelhovictor.tictactoe.objs.Player;
 import com.coelhovictor.tictactoe.objs.Session;
+import com.coelhovictor.tictactoe.objs.SpotType;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.util.Random;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -20,6 +23,11 @@ import javax.swing.border.EmptyBorder;
  * @author VictorCoelho
  */
 public class Home extends javax.swing.JFrame {
+    
+    /**
+     * The spot type selector.
+     */
+    private JComboBox spotTypeSelector;
     
     /** 
      * Class contructor.
@@ -104,10 +112,15 @@ public class Home extends javax.swing.JFrame {
             }
         });
         
+        String[] ls = { "Random", SpotType.X.toString(), SpotType.O.toString() };
+        spotTypeSelector = new JComboBox(ls);
+        spotTypeSelector.setSelectedIndex(0);
+        
         JPanel formPanel = new JPanel(); 
-        formPanel.setLayout(new GridLayout(3, 1, 0, 5));
+        formPanel.setLayout(new GridLayout(4, 1, 0, 5));
         formPanel.add(nickLabel);
         formPanel.add(nickField);
+        formPanel.add(spotTypeSelector);
         formPanel.add(startButton);
         formPanel.setBorder(new EmptyBorder(30, 50, 45, 50));
         
@@ -136,7 +149,24 @@ public class Home extends javax.swing.JFrame {
         Session session = new Session(p);
         Main.setSession(session);
 
-        Game game = new Game();
+        SpotType targetSpotType = SpotType.X;
+        
+        String index = (String)spotTypeSelector.getSelectedItem();
+        if(index.equalsIgnoreCase("RANDOM")) {
+            Random random = new Random();
+            if(random.nextInt(2) == 0) {
+                targetSpotType = SpotType.X;
+            } else {
+                targetSpotType = SpotType.O;
+            }
+        } else {
+            SpotType target = SpotType.valueOf(index);
+            if(target != null) {
+                targetSpotType = target;
+            }
+        }
+        
+        Game game = new Game(targetSpotType);
 
         new Play(game);
         

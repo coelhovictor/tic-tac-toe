@@ -38,6 +38,11 @@ public class Game {
     private List<Spot> winnerSpots;
     
     /**
+     * Player spot type.
+     */
+    private final SpotType playerSpotType;
+    
+    /**
      * Current <code>TurnType</code>.
      */
     private TurnType turnType;
@@ -49,14 +54,17 @@ public class Game {
     
     /** 
      * Class contructor.
+     * 
+     * @param playerSpotType the player spot type
      */
-    public Game() {
+    public Game(SpotType playerSpotType) {
         this.id = UUID.randomUUID().toString();
         this.spots = new HashMap<>();
         this.live = true;
         this.turnType = TurnType.PLAYER;
         this.winner = null;
         this.winnerSpots = new ArrayList<>();
+        this.playerSpotType = playerSpotType;
         this.timing = System.currentTimeMillis();
     }
     
@@ -101,6 +109,13 @@ public class Game {
      * @return <code>Spot</code> all the winner spots
      */
     public List<Spot> getWinnerSpots() { return this.winnerSpots; }
+    
+    /**
+     * Returns the player spot type.
+     * 
+     * @return <code>SpotType</code> all the winner spots
+     */
+    public SpotType getPlayerSpotType() { return this.playerSpotType; }
     
     /**
      * Returns all the avaliable spots.
@@ -171,7 +186,11 @@ public class Game {
              * CPU action
              */
             
-            spot.setSpot(SpotType.O);
+            if(this.playerSpotType == SpotType.X) {
+                spot.setSpot(SpotType.O);
+            } else {
+                spot.setSpot(SpotType.X);
+            }
             
         } else {
             
@@ -179,7 +198,11 @@ public class Game {
              * Player action
              */
             
-            spot.setSpot(SpotType.X);
+            if(this.playerSpotType == SpotType.X) {
+                spot.setSpot(SpotType.X);
+            } else {
+                spot.setSpot(SpotType.O);
+            }
             
         }
         
